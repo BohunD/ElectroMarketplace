@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "729807536813",
+    "project_id": "electro-marketplace",
+    "storage_bucket": "electro-marketplace.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:729807536813:android:b1d34922f25829039e3c24",
+        "android_client_info": {
+          "package_name": "com.bohunapps.electromarketplace"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD7iB-dH3Zi4Gkk3WJaxGShSh1VU3Lclis"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
