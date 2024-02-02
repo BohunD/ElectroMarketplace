@@ -28,13 +28,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import com.bohunapps.electromarketplace.Destination
 import com.bohunapps.electromarketplace.R
 import com.bohunapps.electromarketplace.Util.OutlinedBox
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview
 @Composable
-fun SignInScreen() {
+fun SignInScreen(navController: NavController) {
 
     val emailText = remember {
         mutableStateOf("")
@@ -66,15 +67,6 @@ fun SignInScreen() {
             keyboardType = KeyboardType.Password
         )
 
-        OutlinedTextField(
-            value = passwordText.value,
-            onValueChange = { passwordText.value = it },
-            modifier = Modifier
-                .width(300.dp)
-                .padding(top = 10.dp),
-            label = { Text(text = "Password") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
-        )
 
         Button(
             onClick = { /*TODO*/ },
@@ -98,7 +90,10 @@ fun SignInScreen() {
             modifier = Modifier
                 .padding(top = 10.dp)
                 .clickable {
-                    /*TODO*/
+                    navController.navigate(Destination.SignUp.route){
+                        popUpTo(Destination.SignUp.route)
+                        launchSingleTop = true
+                    }
                 }
         )
     }

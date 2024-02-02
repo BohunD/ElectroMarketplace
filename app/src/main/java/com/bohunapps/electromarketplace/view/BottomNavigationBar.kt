@@ -16,6 +16,9 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemColors
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -37,70 +40,109 @@ fun BottomNavigationBar(navController: NavHostController) {
     val iconCompare = painterResource(id = R.drawable.compare_filled)
     val iconProfile = painterResource(id = R.drawable.profile)
 
-    NavigationBar(modifier = Modifier
-        .fillMaxWidth()
-        .height(50.dp)
-        .clip(RoundedCornerShape(topStart = 8.dp, topEnd = 10.dp))
-        , containerColor = Color(0xFFDAD8D8), contentColor = Color(0xFFDAD8D8)
-    )
-    {
-        NavigationBarItem(
-            selected = currentDestination?.route == Destination.Home.route,
-            onClick = {
-                navController.navigate(Destination.Home.route) {
-                    popUpTo(Destination.Home.route)
-                }
-            },
-            icon = { Icon(iconHome, contentDescription = "Home icon", modifier = Modifier.size(24.dp))},
-            colors = NavigationBarItemDefaults.colors(indicatorColor = Color(0xFFDAD8D8))
+
+    if (currentDestination?.route != Destination.SignIn.route
+        && currentDestination?.route != Destination.SignUp.route
+        && currentDestination?.route != null
+    ) {
+        NavigationBar(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(50.dp)
+                .clip(RoundedCornerShape(topStart = 8.dp, topEnd = 10.dp)),
+            containerColor = Color(0xFFDAD8D8),
+            contentColor = Color(0xFFDAD8D8)
         )
+        {
+            NavigationBarItem(
+                selected = currentDestination?.route == Destination.Home.route,
+                onClick = {
+                    navController.navigate(Destination.Home.route) {
+                        popUpTo(Destination.Home.route)
+                    }
+                },
+                icon = {
+                    Icon(
+                        iconHome,
+                        contentDescription = "Home icon",
+                        modifier = Modifier.size(24.dp)
+                    )
+                },
+                colors = NavigationBarItemDefaults.colors(indicatorColor = Color(0xFFDAD8D8))
+            )
 
 
-        NavigationBarItem(
-            selected = currentDestination?.route == Destination.Favorites.route,
-            onClick = {
-                navController.navigate(Destination.Favorites.route) {
-                    popUpTo(Destination.Favorites.route)
-                }
-            },
-            icon = { Icon(iconFavorite, contentDescription = "Favorites icon", modifier = Modifier.size(24.dp))},
-            colors = NavigationBarItemDefaults.colors(indicatorColor = Color(0xFFDAD8D8))
-        )
+            NavigationBarItem(
+                selected = currentDestination?.route == Destination.Favorites.route,
+                onClick = {
+                    navController.navigate(Destination.Favorites.route) {
+                        popUpTo(Destination.Favorites.route)
+                    }
+                },
+                icon = {
+                    Icon(
+                        iconFavorite,
+                        contentDescription = "Favorites icon",
+                        modifier = Modifier.size(24.dp)
+                    )
+                },
+                colors = NavigationBarItemDefaults.colors(indicatorColor = Color(0xFFDAD8D8))
+            )
 
 
-        NavigationBarItem(
-            selected = currentDestination?.route == Destination.NewAdvertisement.route,
-            onClick = {
-                navController.navigate(Destination.NewAdvertisement.route) {
-                    popUpTo(Destination.NewAdvertisement.route)
-                }
-            },
-            icon = { Icon(iconAdd, contentDescription = "New ad icon", modifier = Modifier.size(40.dp))},
-            colors = NavigationBarItemDefaults.colors(indicatorColor = Color(0xFFDAD8D8))
-        )
+            NavigationBarItem(
+                selected = currentDestination?.route == Destination.NewAdvertisement.route,
+                onClick = {
+                    navController.navigate(Destination.NewAdvertisement.route) {
+                        popUpTo(Destination.NewAdvertisement.route)
+                    }
+                },
+                icon = {
+                    Icon(
+                        iconAdd,
+                        contentDescription = "New ad icon",
+                        modifier = Modifier.size(40.dp)
+                    )
+                },
+                colors = NavigationBarItemDefaults.colors(indicatorColor = Color(0xFFDAD8D8))
+            )
 
 
-        NavigationBarItem(
-            selected = currentDestination?.route == Destination.Comparison.route,
-            onClick = {
-                navController.navigate(Destination.Comparison.route) {
-                    popUpTo(Destination.Comparison.route)
-                }
-            },
-            icon = { Icon(iconCompare, contentDescription = "Compare icon", modifier = Modifier.size(24.dp))},
-            colors = NavigationBarItemDefaults.colors(indicatorColor = Color(0xFFDAD8D8))
-        )
+            NavigationBarItem(
+                selected = currentDestination?.route == Destination.Comparison.route,
+                onClick = {
+                    navController.navigate(Destination.Comparison.route) {
+                        popUpTo(Destination.Comparison.route)
+                    }
+                },
+                icon = {
+                    Icon(
+                        iconCompare,
+                        contentDescription = "Compare icon",
+                        modifier = Modifier.size(24.dp)
+                    )
+                },
+                colors = NavigationBarItemDefaults.colors(indicatorColor = Color(0xFFDAD8D8))
+            )
 
 
-        NavigationBarItem(
-            selected = currentDestination?.route == Destination.Profile.route,
-            onClick = {
-                navController.navigate(Destination.Profile.route) {
-                    popUpTo(Destination.Profile.route)
-                }
-            },
-            icon = { Icon(iconProfile, contentDescription = "Profile icon", modifier = Modifier.size(24.dp))},
-            colors = NavigationBarItemDefaults.colors(indicatorColor = Color(0xFFDAD8D8))
-        )
+            NavigationBarItem(
+                selected = currentDestination?.route == Destination.Profile.route,
+                onClick = {
+                    navController.navigate(Destination.Profile.route) {
+                        popUpTo(Destination.Profile.route)
+                    }
+                },
+                icon = {
+                    Icon(
+                        iconProfile,
+                        contentDescription = "Profile icon",
+                        modifier = Modifier.size(24.dp)
+                    )
+                },
+                colors = NavigationBarItemDefaults.colors(indicatorColor = Color(0xFFDAD8D8))
+            )
+        }
     }
+
 }
