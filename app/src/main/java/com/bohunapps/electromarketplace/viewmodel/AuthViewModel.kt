@@ -65,18 +65,27 @@ class AuthViewModel @Inject constructor(private val repo: FirebaseRepo) : ViewMo
         var proceed = true
         if (email.isEmpty() || !email.contains('@') || !email.contains('.') || email.length < 10) {
             incorrectEmailSignIn.value = true
+            Log.e("SIGNIN", "Email error")
+
             proceed = false
         }
         if (password.isEmpty() || password.length < 6) {
             incorrectPasswordSignIn.value = true
+            Log.e("SIGNIN", "Password error")
+
             proceed = false
         }
         if(proceed){
+            Log.e("SIGNIN", "Proceed")
             viewModelScope.launch {
-                _signUpFlow.value = NetworkResult.Loading()
+                _signInFlow.value = NetworkResult.Loading()
                 val result = repo.signIn( email,password)
-                _signUpFlow.value = result
+                _signInFlow.value = result
             }
         }
+    }
+
+    fun signOut(){
+        repo.signOut()
     }
 }

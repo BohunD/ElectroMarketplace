@@ -73,14 +73,14 @@ fun InitMainActivity(signUpVm: AuthViewModel, firebaseAuth: FirebaseAuth) {
         Destination.Profile.route
     }
     Scaffold(
-        content = {
+        content = { paddingValues->
             NavHost(navController = navController, startDestination = startDestination)  {
                 composable(Destination.Home.route) { HomeScreen() }
                 composable(Destination.Favorites.route) { Favorites() }
                 composable(Destination.NewAdvertisement.route) { NewAdScreen() }
                 composable(Destination.Comparison.route) { ComparisonScreen() }
-                composable(Destination.Profile.route) { ProfileScreen() }
-                composable(Destination.SignIn.route) { SignInScreen(navController) }
+                composable(Destination.Profile.route) { ProfileScreen(navController,paddingValues, signUpVm) }
+                composable(Destination.SignIn.route) { SignInScreen(navController, signUpVm) }
                 composable(Destination.SignUp.route) { SignUpScreen(navController, signUpVm) }
             }
         },

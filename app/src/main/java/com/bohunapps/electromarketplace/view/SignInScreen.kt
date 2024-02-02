@@ -1,5 +1,6 @@
 package com.bohunapps.electromarketplace.view
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -17,10 +18,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.input.KeyboardType
@@ -32,10 +35,12 @@ import androidx.navigation.NavController
 import com.bohunapps.electromarketplace.Destination
 import com.bohunapps.electromarketplace.R
 import com.bohunapps.electromarketplace.Util.OutlinedBox
+import com.bohunapps.electromarketplace.viewmodel.AuthViewModel
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SignInScreen(navController: NavController) {
+fun SignInScreen(navController: NavController, vm: AuthViewModel) {
 
     val emailText = remember {
         mutableStateOf("")
@@ -66,10 +71,23 @@ fun SignInScreen(navController: NavController) {
             label = "Password",
             keyboardType = KeyboardType.Password
         )
-
+        val scope = rememberCoroutineScope()
+        val ctx = LocalContext.current
 
         Button(
-            onClick = { /*TODO*/ },
+            onClick = {
+                vm.signUserIn(
+                    emailText.value,
+                    passwordText.value
+                )
+                scope.launch {
+                    vm.signInFlow.collect {
+                        if (it?.data != null) {
+                            navController.navigate(Destination.Home.route)
+                        }
+                    }
+                }
+            },
             modifier = Modifier
                 .width(220.dp)
                 .padding(top = 60.dp),
@@ -90,7 +108,7 @@ fun SignInScreen(navController: NavController) {
             modifier = Modifier
                 .padding(top = 10.dp)
                 .clickable {
-                    navController.navigate(Destination.SignUp.route){
+                    navController.navigate(Destination.SignUp.route) {
                         popUpTo(Destination.SignUp.route)
                         launchSingleTop = true
                     }

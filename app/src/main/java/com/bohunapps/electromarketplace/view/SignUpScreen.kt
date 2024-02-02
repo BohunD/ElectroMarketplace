@@ -101,12 +101,6 @@ fun SignUpScreen(navController: NavHostController, vm: AuthViewModel) {
                     vm.signUpFlow.collect {
                         if (it?.data != null) {
                             navController.navigate(Destination.Home.route)
-                        } else {
-                            Toast.makeText(
-                                ctx,
-                                "Smth went wrong: ${it}",
-                                Toast.LENGTH_LONG
-                            ).show()
                         }
                     }
                 }
