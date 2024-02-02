@@ -1,5 +1,9 @@
 package com.bohunapps.electromarketplace.model
 
+import com.bohunapps.electromarketplace.model.repository.AuthRepo
+import com.bohunapps.electromarketplace.model.repository.AuthRepoImpl
+import com.bohunapps.electromarketplace.model.repository.FirestoreRepo
+import com.bohunapps.electromarketplace.model.repository.FirestoreRepoImpl
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
@@ -18,6 +22,9 @@ class HiltModule {
     fun provideFirebaseDB(): FirebaseFirestore = FirebaseFirestore.getInstance()
 
     @Provides
-    fun provideAuthRepo(auth: FirebaseAuth, db: FirebaseFirestore): FirebaseRepo =
-        FirebaseRepoImpl(auth, db)
+    fun provideAuthRepo(auth: FirebaseAuth, db: FirebaseFirestore): AuthRepo =
+        AuthRepoImpl(auth, db)
+
+    @Provides
+    fun provideFirestoreRepo(): FirestoreRepo = FirestoreRepoImpl()
 }

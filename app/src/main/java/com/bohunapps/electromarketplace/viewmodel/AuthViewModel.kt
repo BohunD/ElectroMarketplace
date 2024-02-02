@@ -3,8 +3,10 @@ package com.bohunapps.electromarketplace.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.bohunapps.electromarketplace.model.FirebaseRepo
+import com.bohunapps.electromarketplace.model.repository.AuthRepo
 import com.bohunapps.electromarketplace.model.NetworkResult
+import com.bohunapps.electromarketplace.model.User
+import com.bohunapps.electromarketplace.model.repository.FirestoreRepo
 import com.google.firebase.auth.FirebaseUser
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,7 +15,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class AuthViewModel @Inject constructor(private val repo: FirebaseRepo) : ViewModel() {
+class AuthViewModel @Inject constructor(private val authRepo: AuthRepo, private val firestoreRepo: FirestoreRepo) : ViewModel() {
     val incorrectName = MutableStateFlow(false)
     val incorrectEmail = MutableStateFlow(false)
     val incorrectPhone = MutableStateFlow(false)
@@ -21,6 +23,8 @@ class AuthViewModel @Inject constructor(private val repo: FirebaseRepo) : ViewMo
     val incorrectEmailSignIn = MutableStateFlow(false)
     val incorrectPasswordSignIn = MutableStateFlow(false)
 
+    private val _userFlow = MutableStateFlow<User?>(null)
+    val userFlow: StateFlow<User?> = _userFlow
 
 
     private val _signInFlow = MutableStateFlow<NetworkResult<FirebaseUser>?>(null)
@@ -54,7 +58,7 @@ class AuthViewModel @Inject constructor(private val repo: FirebaseRepo) : ViewMo
         if(proceed){
             viewModelScope.launch {
                 _signUpFlow.value = NetworkResult.Loading()
-                val result = repo.signUp(name, email,phone,password)
+                val result = authRepo.signUp(name, email,phone,password)
                 Log.e("RESULT", result.toString())
                 _signUpFlow.value = result
             }
@@ -79,13 +83,24 @@ class AuthViewModel @Inject constructor(private val repo: FirebaseRepo) : ViewMo
             Log.e("SIGNIN", "Proceed")
             viewModelScope.launch {
                 _signInFlow.value = NetworkResult.Loading()
-                val result = repo.signIn( email,password)
+                val result = authRepo.signIn( email,password)
                 _signInFlow.value = result
             }
         }
     }
 
     fun signOut(){
-        repo.signOut()
+        authRepo.signOut()
+    }
+
+    fun getUserInfo(){
+        viewModelScope.launch {
+            val result = firestoreRepo.getUserInfo()
+            if (result.data != null) {
+                _userFlow.value =result.data
+                Log.e("GET_USER_INFO", "result.data != null")
+            }
+
+        }
     }
 }

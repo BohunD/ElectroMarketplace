@@ -25,6 +25,7 @@ import com.bohunapps.electromarketplace.view.ProfileScreen
 import com.bohunapps.electromarketplace.view.SignInScreen
 import com.bohunapps.electromarketplace.view.SignUpScreen
 import com.bohunapps.electromarketplace.viewmodel.AuthViewModel
+import com.bohunapps.electromarketplace.viewmodel.NewAdViewModel
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -45,6 +46,7 @@ sealed class Destination(val route: String) {
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private val signUpVM by viewModels<AuthViewModel>()
+    private val newAdVM by viewModels<NewAdViewModel>()
     private val firebaseAuth = FirebaseAuth.getInstance()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,7 +56,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    InitMainActivity(signUpVM, firebaseAuth)
+                    InitMainActivity(signUpVM,newAdVM, firebaseAuth)
                 }
             }
         }
@@ -64,7 +66,7 @@ class MainActivity : ComponentActivity() {
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun InitMainActivity(signUpVm: AuthViewModel, firebaseAuth: FirebaseAuth) {
+fun InitMainActivity(signUpVm: AuthViewModel,newAdVM: NewAdViewModel, firebaseAuth: FirebaseAuth) {
     val navController = rememberNavController()
     val currentUser = firebaseAuth.currentUser
     val startDestination = if(currentUser== null){
@@ -77,7 +79,7 @@ fun InitMainActivity(signUpVm: AuthViewModel, firebaseAuth: FirebaseAuth) {
             NavHost(navController = navController, startDestination = startDestination)  {
                 composable(Destination.Home.route) { HomeScreen() }
                 composable(Destination.Favorites.route) { Favorites() }
-                composable(Destination.NewAdvertisement.route) { NewAdScreen() }
+                composable(Destination.NewAdvertisement.route) { NewAdScreen(navController,newAdVM, paddingValues) }
                 composable(Destination.Comparison.route) { ComparisonScreen() }
                 composable(Destination.Profile.route) { ProfileScreen(navController,paddingValues, signUpVm) }
                 composable(Destination.SignIn.route) { SignInScreen(navController, signUpVm) }

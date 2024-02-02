@@ -43,14 +43,24 @@ object Util {
         )
     }
 
-    suspend fun <T> Task<T>.await(): T{
-        return suspendCancellableCoroutine { cont->
-            addOnCompleteListener{task->
-                if(task.exception!=null){
+    suspend fun <T> Task<T>.await(): T {
+        return suspendCancellableCoroutine { cont ->
+            addOnCompleteListener { task ->
+                if (task.exception != null) {
                     cont.resumeWithException(task.exception!!)
-                }else{
-                    cont.resume(task.result, null)
+                } else {
+                    cont.resume(task.result)
                 }
+            }
+        }
+    }
+
+    suspend fun <T> Task<T>.awaitSuccess(): T {
+        return suspendCancellableCoroutine { cont ->
+            addOnSuccessListener {
+                cont.resume(it)
+            }.addOnFailureListener {
+                cont.resumeWithException(Exception(it.message))
             }
         }
     }
