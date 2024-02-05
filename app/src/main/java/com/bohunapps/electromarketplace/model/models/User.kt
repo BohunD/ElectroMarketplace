@@ -1,4 +1,4 @@
-package com.bohunapps.electromarketplace.model
+package com.bohunapps.electromarketplace.model.models
 
 data class User(
     val username: String? = "",

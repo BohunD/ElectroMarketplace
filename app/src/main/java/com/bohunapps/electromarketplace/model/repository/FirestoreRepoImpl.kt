@@ -4,7 +4,7 @@ import android.util.Log
 import com.bohunapps.electromarketplace.Constants.USERS_TABLE
 import com.bohunapps.electromarketplace.Util.awaitSuccess
 import com.bohunapps.electromarketplace.model.NetworkResult
-import com.bohunapps.electromarketplace.model.User
+import com.bohunapps.electromarketplace.model.models.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.MutableStateFlow

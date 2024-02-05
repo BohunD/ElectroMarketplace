@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bohunapps.electromarketplace.model.repository.AuthRepo
 import com.bohunapps.electromarketplace.model.NetworkResult
-import com.bohunapps.electromarketplace.model.User
+import com.bohunapps.electromarketplace.model.models.User
 import com.bohunapps.electromarketplace.model.repository.FirestoreRepo
 import com.google.firebase.auth.FirebaseUser
 import dagger.hilt.android.lifecycle.HiltViewModel
