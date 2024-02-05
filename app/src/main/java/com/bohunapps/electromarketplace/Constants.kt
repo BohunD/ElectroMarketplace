@@ -4,6 +4,8 @@ import com.bohunapps.electromarketplace.model.models.Category
 
 object Constants {
     const val USERS_TABLE = "Users"
+    const val DATA_AD_PHOTOS = "photos"
+    const val DATA_ADS = "advertisements"
 
 
     val CATEGORIES = arrayListOf(

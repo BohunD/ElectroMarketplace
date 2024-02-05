@@ -62,6 +62,7 @@ import coil.compose.rememberAsyncImagePainter
 import com.bohunapps.electromarketplace.Constants
 import com.bohunapps.electromarketplace.CustomDropdownMenu
 import com.bohunapps.electromarketplace.CustomDropdownMenuStr
+import com.bohunapps.electromarketplace.Destination
 import com.bohunapps.electromarketplace.R
 import com.bohunapps.electromarketplace.viewmodel.NewAdViewModel
 import kotlinx.coroutines.flow.collect
@@ -111,13 +112,15 @@ fun NewAdScreen(
         NewAdTextField(
             nameText, modifier = Modifier
                 .padding(top = 6.dp, start = 2.dp, end = 2.dp)
-                .fillMaxWidth(), "Name of product", KeyboardType.Text
+                .fillMaxWidth(), "Name of product", KeyboardType.Text,
+            onValueChanged = {vm.setName(nameText.value)}
         )
         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
             NewAdTextField(
                 priceText, modifier = Modifier
                     .padding(top = 6.dp, start = 2.dp, end = 2.dp)
-                    .weight(1f), "Price", KeyboardType.Number
+                    .weight(1f), "Price", KeyboardType.Number,
+                onValueChanged = {vm.setPrice(priceText.value)}
             )
             Text(
                 text = "\$",
@@ -133,7 +136,8 @@ fun NewAdScreen(
             NewAdTextField(
                 cityText, modifier = Modifier
                     .padding(top = 6.dp, start = 2.dp, end = 2.dp)
-                    .weight(1f), "City", KeyboardType.Text
+                    .weight(1f), "City", KeyboardType.Text,
+                onValueChanged = {vm.setCity(cityText.value)}
             )
             Spacer(modifier = Modifier.weight(1f))
         }
@@ -182,11 +186,21 @@ fun NewAdScreen(
             label = "Description",
             keyboardType = KeyboardType.Text,
             fontWeight = FontWeight.Medium,
-            hint = "Shortly describe the product"
+            hint = "Shortly describe the product",
+            onValueChanged = {vm.setDescription(description.value)}
         )
 
         Button(
-            onClick = { /*TODO*/ },
+            onClick = {
+                      scope.launch{
+                          vm.postAdvertisement()
+                      }
+                if(vm.validateInput()){
+                    vm.clear()
+                    navController.navigate(Destination.Home.route)
+                }
+
+            },
             shape = (RoundedCornerShape(4.dp)),
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color(0xFFABACAB)
@@ -259,10 +273,14 @@ fun NewAdTextField(
     keyboardType: KeyboardType,
     fontWeight: FontWeight = FontWeight.Normal,
     hint: String = "",
+    onValueChanged: ()->Unit = {}
 ) {
     OutlinedTextField(
         value = state.value,
-        onValueChange = { state.value = it },
+        onValueChange = {
+            state.value = it
+            onValueChanged()
+                        },
         modifier = modifier,
         placeholder = { Text(text = hint) },
         label = { Text(text = label, fontWeight = fontWeight) },
