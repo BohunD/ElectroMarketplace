@@ -19,10 +19,10 @@ import javax.inject.Inject
 @HiltViewModel
 class NewAdViewModel @Inject constructor(private val repo: FirestoreRepo) : ViewModel() {
     val photos = mutableStateListOf<Uri?>(null)
-    val selectedCategory = MutableStateFlow<Category?>(null)
+    private val selectedCategory = MutableStateFlow<Category?>(null)
     val filtersForCategory = MutableStateFlow<Map<String, ArrayList<String>>>(mapOf())
-    val selectedFilter = MutableStateFlow<MutableMap<String, String>>(mutableMapOf())
-    var photosList: MutableList<String> = mutableListOf()
+    private val selectedFilter = MutableStateFlow<MutableMap<String, String>>(mutableMapOf())
+    private var photosList: MutableList<String> = mutableListOf()
     private var productName = ""
     private var productPrice = ""
     private var productCity = ""
@@ -44,45 +44,62 @@ class NewAdViewModel @Inject constructor(private val repo: FirestoreRepo) : View
 
     }
 
-    suspend fun postAdvertisement() {
-        val adId = repo.adId
+     fun postAdvertisementWhenReady() {
+        var successfulUploads = 0
+        val totalPhotos = photos.count { it != null }
 
         for (photo in photos) {
-            if(photo!=null) {
-                storeImage(photo)
-                photosList.add(photo.toString())
+            if(photo != null) {
+                storeImage(photo) { imageUrl ->
+                    successfulUploads++
+                    if (successfulUploads == totalPhotos) {
+                        viewModelScope.launch {
+                            postAdvertisement()
+                        }
+                    }
+                }
             }
         }
-            val ad = Advertisement(
-                adId.id,
-                photosList,
-                productName,
-                productPrice,
-                selectedCategory.value?.name,
-                selectedFilter.value,
-                productDescription,
-                productCity,
-                System.currentTimeMillis(),
-                repo.userId!!
-            )
-            Log.e("POST", ad.toString())
-            repo.postAdvertisement(ad)
     }
 
-    fun storeImage(imageUri: Uri?) {
+    private fun storeImage(imageUri: Uri?, onComplete: (String) -> Unit) {
         imageUri?.let {
             val uniqueImageName = "${System.currentTimeMillis()}_${UUID.randomUUID()}"
             val filePath =
                 repo.firebaseStorage.child(DATA_AD_PHOTOS).child(repo.userId!!)
                     .child(uniqueImageName)
             filePath.putFile(imageUri)
-                .addOnSuccessListener {
+                .addOnSuccessListener { taskSnapshot ->
                     Log.e("StoreImage", "SUCCESS")
+                    filePath.downloadUrl.addOnSuccessListener { uri ->
+                        val imageUrl = uri.toString()
+                        photosList.add(imageUrl)
+                        onComplete(imageUrl)
+                    }
                 }.addOnFailureListener {
                     it.printStackTrace()
                     Log.e("StoreImage", "Failure")
                 }
         }
+    }
+
+    suspend fun postAdvertisement() {
+        val adId = repo.adId
+
+        val ad = Advertisement(
+            adId.id,
+            photosList,
+            productName,
+            productPrice,
+            selectedCategory.value?.name,
+            selectedFilter.value,
+            productDescription,
+            productCity,
+            System.currentTimeMillis(),
+            repo.userId!!
+        )
+        Log.e("POST", ad.toString())
+        repo.postAdvertisement(ad)
     }
 
     fun validateInput(): Boolean {

@@ -1,14 +1,20 @@
 package com.bohunapps.electromarketplace.viewmodel
 
+import android.annotation.SuppressLint
 import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bohunapps.electromarketplace.model.repository.AuthRepo
 import com.bohunapps.electromarketplace.model.NetworkResult
+import com.bohunapps.electromarketplace.model.models.Advertisement
 import com.bohunapps.electromarketplace.model.models.User
 import com.bohunapps.electromarketplace.model.repository.FirestoreRepo
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -25,6 +31,9 @@ class AuthViewModel @Inject constructor(private val authRepo: AuthRepo, private 
 
     private val _userFlow = MutableStateFlow<User?>(null)
     val userFlow: StateFlow<User?> = _userFlow
+
+    private var _adsLD = MutableLiveData<List<Advertisement>>()
+    val adsLD: LiveData<List<Advertisement>?> = _adsLD
 
 
     private val _signInFlow = MutableStateFlow<NetworkResult<FirebaseUser>?>(null)
@@ -100,6 +109,16 @@ class AuthViewModel @Inject constructor(private val authRepo: AuthRepo, private 
                 _userFlow.value =result.data
                 Log.e("GET_USER_INFO", "result.data != null")
             }
+
+        }
+    }
+
+    @SuppressLint("SuspiciousIndentation")
+    fun getUserAds(){
+        viewModelScope.launch {
+            firestoreRepo.getUsersAdvertisements(firestoreRepo.userId)
+            _adsLD.value = firestoreRepo.getUsersAdvertisements(firestoreRepo.userId)
+                Log.e("ProfileScreen", _adsLD.value.toString())
 
         }
     }

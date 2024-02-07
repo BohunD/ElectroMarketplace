@@ -34,6 +34,9 @@ import androidx.compose.ui.unit.toSize
 import com.bohunapps.electromarketplace.model.models.Category
 import com.google.android.gms.tasks.Task
 import kotlinx.coroutines.suspendCancellableCoroutine
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
@@ -83,7 +86,15 @@ object Util {
             }
         }
     }
+    fun getDateTimeFromLong(dateTime: Long?): String {
+        dateTime?.let {
+            val sdf = SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.getDefault())
+            return sdf.format(Date(it))
+        }
+        return "Unknown"
+    }
 }
+
 
 
 @OptIn(ExperimentalMaterial3Api::class)

@@ -6,6 +6,8 @@ object Constants {
     const val USERS_TABLE = "Users"
     const val DATA_AD_PHOTOS = "photos"
     const val DATA_ADS = "advertisements"
+    const val DATA_AD_USER_ID = "userId"
+
 
 
     val CATEGORIES = arrayListOf(

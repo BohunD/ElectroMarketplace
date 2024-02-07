@@ -192,9 +192,9 @@ fun NewAdScreen(
 
         Button(
             onClick = {
-                      scope.launch{
-                          vm.postAdvertisement()
-                      }
+
+                          vm.postAdvertisementWhenReady()
+
                 if(vm.validateInput()){
                     vm.clear()
                     navController.navigate(Destination.Home.route)
